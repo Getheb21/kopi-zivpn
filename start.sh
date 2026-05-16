@@ -1,20 +1,9 @@
 #!/bin/bash
-# start.sh
 
-echo "Starting Railway Gateway Server..."
+# 1. Jalankan binary ZiVPN di latar belakang (misal ZiVPN pakai port UDP 5678)
+./zivpn -port 5678 & 
 
-# Set environment jika belum diset
-export PORT=${PORT:-3000}
-export NODE_ENV=${NODE_ENV:-production}
-
-echo "PORT: $PORT"
-echo "NODE_ENV: $NODE_ENV"
-
-# Install dependencies jika node_modules tidak ada
-if [ ! -d "node_modules" ]; then
-  echo "Installing dependencies..."
-  npm install --production
-fi
-
-# Start server
-node server.js
+# 2. Ambil port TCP publik yang disediakan oleh Railway
+# Lalu alihkan semua traffic TCP masuk dari Railway ke port UDP ZiVPN di dalam internal server
+echo "Mengalihkan TCP port $PORT ke UDP port 5678..."
+socat TCP-LISTEN:$PORT,fork UDP:127.0.0.1:5678
