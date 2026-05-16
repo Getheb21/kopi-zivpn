@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# 1. Jalankan binary ZiVPN di latar belakang (misal ZiVPN pakai port UDP 5678)
-./zivpn -port 5678 & 
+# 1. Jalankan core server ZiVPN menggunakan config.json di background
+/app/zivpn server -c /app/config.json &
 
-# 2. Ambil port TCP publik yang disediakan oleh Railway
-# Lalu alihkan semua traffic TCP masuk dari Railway ke port UDP ZiVPN di dalam internal server
-echo "Mengalihkan TCP port $PORT ke UDP port 5678..."
-socat TCP-LISTEN:$PORT,fork UDP:127.0.0.1:5678
+echo "Menunggu ZiVPN Server menyala..."
+sleep 2
+
+# 2. Bridge port TCP publik milik Railway ($PORT) ke port UDP lokal ZiVPN (:5667)
+echo "Mengalihkan koneksi masuk TCP Port $PORT ke internal UDP Port 5667"
+socat TCP-LISTEN:$PORT,fork UDP:127.0.0.1:5667
