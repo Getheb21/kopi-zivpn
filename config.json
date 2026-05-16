@@ -1,0 +1,10 @@
+{
+  "listen": ":5667",
+  "cert": "/app/zivpn.crt",
+  "key": "/app/zivpn.key",
+  "obfs": "zivpn",
+  "auth": {
+    "mode": "passwords",
+    "config": ["zi"]
+  }
+}
